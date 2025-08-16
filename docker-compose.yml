@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    build: ./apps/api-gateway
+    environment:
+      - BACKEND_ACTIVE=${BACKEND_ACTIVE:-python}
+      - FRONTEND_ACTIVE=${FRONTEND_ACTIVE:-react}
+      - PY_BACKEND_URL=http://core-python:8000
+      - JAVA_BACKEND_URL=http://core-java:8081
+    ports:
+      - "8080:8080"
+    depends_on:
+      - core-python
+      - core-java
+    volumes:
+      - ./apps/web-react:/app/public/react:ro
+      - ./apps/web-vue:/app/public/vue:ro
+
+  core-python:
+    build: ./apps/core-python
+    environment:
+      - PORT=8000
+    expose:
+      - "8000"
+
+  core-java:
+    build: ./apps/core-java
+    environment:
+      - SERVER_PORT=8081
+    expose:
+      - "8081"

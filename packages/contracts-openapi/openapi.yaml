@@ -1,0 +1,52 @@
+openapi: 3.0.3
+info:
+  title: Music Friends API
+  version: 1.0.0
+servers:
+  - url: https://api.example.com
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  backend:
+                    type: string
+                  time:
+                    type: string
+                    format: date-time
+  /now/{friendId}:
+    get:
+      summary: Get current track for a friend
+      parameters:
+        - name: friendId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current track info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId: { type: string }
+                  title: { type: string }
+                  artist: { type: string }
+                  album: { type: string, nullable: true }
+                  artworkUrl: { type: string, nullable: true }
+                  service: { type: string }
+                  startedAt: { type: string, format: date-time }
+                  positionSec: { type: integer }
+                  isPaused: { type: boolean }
+                  updatedAt: { type: string, format: date-time }

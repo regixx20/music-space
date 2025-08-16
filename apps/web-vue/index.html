@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Music Friends • Vue</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+      body { font-family: ui-sans-serif, system-ui; margin: 0; }
+      header { padding: 12px 16px; border-bottom: 1px solid #eee; }
+      .container { padding: 16px; max-width: 800px; margin: 0 auto; }
+      .card { padding: 16px; border: 1px solid #ddd; border-radius: 12px; margin-top: 16px; }
+      code { background:#f6f6f6; padding:2px 6px; border-radius:6px; }
+    </style>
+  </head>
+  <body>
+    <header><strong>Music Friends</strong> <span style="opacity:.6">Vue</span></header>
+    <div id="app"></div>
+    <script type="text/javascript">
+      const App = {
+        data() {
+          return { health: null, now: null };
+        },
+        mounted() {
+          fetch("/api/health").then(r=>r.json()).then(d=>this.health=d);
+          fetch("/api/now/demo").then(r=>r.json()).then(d=>this.now=d);
+        },
+        template: `
+          <div class="container">
+            <div class="card">
+              <h2>API Health</h2>
+              <pre>{{ JSON.stringify(health, null, 2) }}</pre>
+            </div>
+            <div class="card">
+              <h2>Now Playing (démo)</h2>
+              <div v-if="now">
+                <div><strong>{{ now.title }}</strong> — {{ now.artist }}</div>
+                <small>service: {{ now.service }}</small>
+                <div><img :src="now.artworkUrl" width="96" height="96" /></div>
+              </div>
+              <div v-else>...</div>
+            </div>
+            <div class="card">
+              <h3>Changer de backend/front</h3>
+              <p>Relance docker compose avec des variables :</p>
+              <pre>BACKEND_ACTIVE=java FRONTEND_ACTIVE=vue docker compose up --build</pre>
+            </div>
+          </div>
+        `
+      };
+      Vue.createApp(App).mount("#app");
+    </script>
+  </body>
+</html>

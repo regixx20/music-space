@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Music Friends • React</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <style>
+      body { font-family: ui-sans-serif, system-ui; margin: 0; }
+      header { padding: 12px 16px; border-bottom: 1px solid #eee; }
+      .container { padding: 16px; max-width: 800px; margin: 0 auto; }
+      .card { padding: 16px; border: 1px solid #ddd; border-radius: 12px; margin-top: 16px; }
+      code { background:#f6f6f6; padding:2px 6px; border-radius:6px; }
+    </style>
+  </head>
+  <body>
+    <header><strong>Music Friends</strong> <span style="opacity:.6">React</span></header>
+    <div id="root"></div>
+    <script type="text/javascript">
+      const e = React.createElement;
+
+      function App() {
+        const [health, setHealth] = React.useState(null);
+        const [now, setNow] = React.useState(null);
+        React.useEffect(() => {
+          fetch("/api/health").then(r=>r.json()).then(setHealth);
+          fetch("/api/now/demo").then(r=>r.json()).then(setNow);
+        }, []);
+        return e('div', {className:'container'},
+          e('div', {className:'card'},
+            e('h2', null, 'API Health'),
+            e('pre', null, JSON.stringify(health, null, 2))
+          ),
+          e('div', {className:'card'},
+            e('h2', null, 'Now Playing (démo)'),
+            now ? e('div', null,
+              e('div', null, e('strong', null, now.title), ' — ', now.artist),
+              e('small', null, 'service: ', now.service),
+              e('div', null, e('img', {src: now.artworkUrl, width: 96, height: 96}))
+            ) : '...'
+          ),
+          e('div', {className:'card'},
+            e('h3', null, 'Changer de backend/front'),
+            e('p', null, 'Relance docker compose avec des variables :'),
+            e('pre', null, 'BACKEND_ACTIVE=java FRONTEND_ACTIVE=vue docker compose up --build')
+          )
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById('root')).render(e(App));
+    </script>
+  </body>
+</html>
